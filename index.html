@@ -1,1320 +1,251 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
- <head>
-  <base target="_top"/>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
-  <meta name="google-client-id" content="11160099964-ec53368arc0imp7mju1f75t5hjduf3td.apps.googleusercontent.com"/>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="google-client-id" content="11160099964-ec53368arc0imp7mju1f75t5hjduf3td.apps.googleusercontent.com">
+  <title>My Voice</title>
   <style>
-   :root {
-    --b:#f2f5fa;
-    --p:#fff;
-    --t:#172033;
-    --m:#617087;
-    --l:#c8d2e3;
-    --a:#1859c9
-}
-* {
-    box-sizing:border-box
-}
-body {
-    margin:0;
-    background:var(--b);
-    color:var(--t);
-    font-family:system-ui,sans-serif
-}
-button,select,input {
-    font:inherit
-}
-button {
-    touch-action:manipulation
-}
-button:focus-visible {
-    outline:4px solid #ffbd3e;
-    outline-offset:2px
-}
-.app {
-    max-width:1150px;
-    margin:auto;
-    padding:10px
-}
-.top {
-    display:flex;
-    justify-content:space-between;
-    align-items:center
-}
-.top h1 {
-    margin:0
-}
-.settings {
-    min-width:54px;
-    min-height:54px;
-    border:2px solid var(--l);
-    border-radius:14px;
-    background:var(--p);
-    font-size:24px
-}
-.composer {
-    position:sticky;
-    top:0;
-    z-index:2;
-    margin:10px 0;
-    padding:10px;
-    border:2px solid var(--l);
-    border-radius:16px;
-    background:var(--p)
-}
-.message {
-    min-height:70px;
-    padding:12px;
-    border:2px solid var(--l);
-    border-radius:12px;
-    background:var(--b);
-    font-size:clamp(22px,4vw,34px);
-    font-weight:750
-}
-.muted {
-    color:var(--m);
-    font-weight:500
-}
-.actions {
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:8px;
-    margin-top:8px
-}
-.action,.cat {
-    min-height:52px;
-    border:2px solid var(--l);
-    border-radius:11px;
-    background:#e5ebf5;
-    font-weight:800
-}
-.speak,.cat.on {
-    border-color:var(--a);
-    background:var(--a);
-    color:#fff
-}
-.cats {
-    display:flex;
-    gap:8px;
-    overflow:auto;
-    padding-bottom:10px
-}
-.cat {
-    flex:none;
-    padding:8px 18px;
-    background:var(--p)
-}
-.board {
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-    gap:10px
-}
-.word {
-    min-height:130px;
-    border:3px solid #5575c9;
-    border-radius:17px;
-    background:var(--p);
-    color:var(--t)
-}
-.sym {
-    display:block;
-    font-size:48px
-}
-.large .lab {
-    font-size:clamp(24px,4vw,32px)
-}
-.lab {
-    font-size:clamp(18px,3vw,24px);
-    font-weight:850
-}
-button:disabled {
-    opacity:.4
-}
-@media(max-width:620px) {
-    .actions,.board {
-        grid-template-columns:repeat(2,1fr)
-    }
-}
-@media(prefers-color-scheme:dark) {
-    :root {
-        --b:#111827;
-        --p:#1f2937;
-        --t:#f5f7fb;
-        --m:#bbc5d6;
-        --l:#56647b;
-        --a:#76a7ff
-    }
-    .speak,.cat.on {
-        color:#071a39
-    }
-    .action {
-        background:#303d51
-    }
-}
-.customize {
-    width:min(560px,calc(100% - 24px));
-    border:0;
-    border-radius:18px;
-    padding:0;
-    background:var(--p);
-    color:var(--t)
-}
-.customize::backdrop {
-    background:#081122aa
-}
-.panel {
-    display:grid;
-    gap:13px;
-    padding:18px
-}
-.panel h2,.panel h3 {
-    margin:0
-}
-.panel label {
-    display:grid;
-    gap:5px;
-    font-weight:750
-}
-.panel input,.panel select {
-    width:100%;
-    min-height:48px;
-    padding:8px;
-    border:2px solid var(--l);
-    border-radius:9px;
-    background:var(--b);
-    color:var(--t)
-}
-.formgrid {
-    display:grid;
-    grid-template-columns:1fr 90px 1fr;
-    gap:9px
-}
-.panelbuttons {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px
-}
-.customitem {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
-    padding:7px;
-    border:1px solid var(--l);
-    border-radius:8px
-}
-.customitem button {
-    min-height:42px;
-    border:1px solid var(--l);
-    border-radius:8px;
-    color:var(--danger);
-    background:var(--b)
-}
-.customlist {
-    display:grid;
-    gap:6px;
-    max-height:150px;
-    overflow:auto
-}
-.toggle {
-    display:flex!important;
-    grid-template-columns:1fr auto!important;
-    align-items:center
-}
-.toggle input {
-    width:28px;
-    height:28px
-}
-.hint {
-    margin:0;
-    color:var(--m);
-    font-size:.9rem
-}
-@media(max-width:560px) {
-    .formgrid {
-        grid-template-columns:1fr 80px
-    }
-    .formgrid label:last-child {
-        grid-column:1/-1
-    }
-}
-.wordimg {
-    display:block;
-    width:64px;
-    height:64px;
-    margin:auto;
-    object-fit:cover;
-    border-radius:12px
-}
-.mediafields {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px
-}
-.backuprow {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px
-}
-.filelabel {
-    display:grid;
-    gap:5px;
-    font-weight:750
-}
-.filelabel input {
-    font-size:.85rem
-}
-@media(max-width:560px) {
-    .mediafields,.backuprow {
-        grid-template-columns:1fr
-    }
-}
-.confirmbox {
-    width:min(420px,calc(100% - 24px));
-    border:0;
-    border-radius:18px;
-    padding:0;
-    background:var(--p);
-    color:var(--t)
-}
-.confirmbody {
-    display:grid;
-    gap:16px;
-    padding:20px
-}
-.confirmbody h2,.confirmbody p {
-    margin:0
-}
-.confirmbuttons {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px
-}
-.toast {
-    position:fixed;
-    left:50%;
-    bottom:24px;
-    z-index:20;
-    transform:translateX(-50%);
-    max-width:calc(100% - 24px);
-    padding:12px 18px;
-    border-radius:999px;
-    background:#172033;
-    color:#fff;
-    font-weight:750;
-    box-shadow:0 5px 20px #0005
-}
-
-.cloudbar {
-    display:flex;
-    align-items:center;
-    gap:8px
-}
-.cloudstatus {
-    max-width:210px;
-    color:var(--m);
-    font-size:.82rem;
-    font-weight:700;
-    text-align:right
-}
-.cloudbutton {
-    min-height:54px;
-    padding:8px 12px;
-    border:2px solid var(--l);
-    border-radius:14px;
-    background:var(--p);
-    color:var(--t);
-    font-weight:800
-}
-.cloudbutton.on {
-    border-color:var(--a)
-}
-.google-signin {
-    background:#fff;
-    color:#1f1f1f;
-    border-color:#dadce0;
-    box-shadow:0 1px 2px #0002;
-}
-.google-signin::before {
-    content:"G";
-    display:inline-grid;
-    place-items:center;
-    width:24px;
-    height:24px;
-    margin-right:8px;
-    border-radius:50%;
-    font-weight:900;
-    color:#4285f4;
-}
-.cloudbutton.on::before {
-    content:"✓";
-    color:var(--a);
-}
-@media(max-width:620px) {
-    .cloudstatus {display:none}
-    .cloudbutton {padding:8px 10px}
-}
-
-.toast[hidden] {
-    display:none
-}
+    :root{--bg:#eef3f9;--panel:#fff;--text:#172033;--muted:#66748a;--line:#c8d4e5;--accent:#1859c9;--danger:#b42318;--cols:4;--gap:10px;--tile:126px}
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+    button,input,select,textarea{font:inherit} button{touch-action:manipulation}
+    button:focus-visible{outline:4px solid #ffbd3e;outline-offset:2px}
+    body.high-contrast{--bg:#000;--panel:#000;--text:#fff;--muted:#fff;--line:#fff;--accent:#ffdf00}
+    .app{max-width:1280px;margin:auto;padding:10px 10px 70px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .brand small{display:block;color:var(--muted)} .brand h1{margin:0;font-size:clamp(28px,5vw,42px)}
+    .top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .pill,.iconbtn{min-height:48px;border:2px solid var(--line);background:var(--panel);color:var(--text);border-radius:14px;padding:8px 14px;font-weight:800}
+    .iconbtn{min-width:50px;font-size:22px;padding:6px 10px}.pill.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .pill.danger{background:#fff0ef;color:var(--danger);border-color:#efb6b1}.pill.on{background:#e8f0ff;border-color:var(--accent)}
+    .cloudline{font-size:.9rem;color:var(--muted);font-weight:700}
+    .composer{position:sticky;top:0;z-index:8;margin:10px 0;padding:10px;border:2px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:0 4px 18px #0001}
+    .message{min-height:66px;padding:12px;border:2px solid var(--line);border-radius:13px;background:var(--bg);font-size:clamp(22px,4vw,34px);font-weight:800;word-break:break-word}
+    .message .muted{color:var(--muted);font-weight:600}
+    .actions{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:8px}.action{min-height:48px;border:2px solid var(--line);border-radius:11px;background:#e9eef6;color:var(--text);font-weight:850}.action.speak{background:var(--accent);border-color:var(--accent);color:#fff}.action:disabled{opacity:.4}
+    .suggestions{display:flex;gap:8px;overflow:auto;padding:4px 0 8px}.suggestion{flex:none;min-height:42px;padding:7px 14px;border:2px solid #9cb6df;border-radius:999px;background:#f7faff;font-weight:800;color:var(--text)}
+    .cats{display:flex;gap:8px;overflow:auto;padding:6px 0 12px;position:sticky;top:166px;z-index:7;background:linear-gradient(var(--bg) 75%,transparent)}
+    .cat{flex:none;min-height:48px;padding:8px 17px;border:2px solid var(--line);border-radius:12px;background:var(--panel);font-weight:850;color:var(--text)}.cat.on{background:var(--accent);border-color:var(--accent);color:#fff}
+    .board{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:var(--gap)}
+    .word{position:relative;min-height:var(--tile);border:3px solid #5575c9;border-radius:18px;background:var(--panel);color:var(--text);padding:8px;overflow:hidden;font-weight:800}.word.scan{outline:6px solid #ffbd3e;outline-offset:2px;transform:scale(.98)}
+    .word.favorite{border-color:#d69e00}.word .sym{display:block;font-size:48px;line-height:1.1}.word .lab{display:block;font-size:clamp(17px,2.5vw,25px);font-weight:900}.wordimg{display:block;width:68px;height:68px;margin:0 auto 6px;object-fit:cover;border-radius:13px}
+    .star{position:absolute;right:5px;top:5px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--panel);font-size:18px;z-index:2}
+    .section-title{margin:14px 2px 8px;font-size:1.15rem;color:var(--muted)}
+    .scene-wrap{display:grid;gap:12px}.scene-stage{position:relative;border:3px solid var(--line);border-radius:18px;overflow:hidden;background:#111;min-height:240px}.scene-stage img{display:block;width:100%;max-height:70vh;object-fit:contain}.hotspot{position:absolute;transform:translate(-50%,-50%);min-width:58px;min-height:58px;border:4px solid #fff;border-radius:999px;background:#1859c9dd;color:#fff;font-weight:900;box-shadow:0 3px 12px #0008}.scene-help{color:var(--muted);font-weight:700}
+    dialog{border:0;border-radius:20px;background:var(--panel);color:var(--text);padding:0;max-width:calc(100% - 24px)}dialog::backdrop{background:#081122aa}.settings-dialog{width:min(760px,calc(100% - 24px))}.panel{display:grid;gap:13px;padding:18px}.panel h2,.panel h3{margin:0}.panel label{display:grid;gap:5px;font-weight:800}.panel input,.panel select,.panel textarea{width:100%;min-height:46px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);padding:8px}.panel textarea{min-height:90px;resize:vertical}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.toggle{display:flex!important;align-items:center;justify-content:space-between;gap:10px}.toggle input{width:28px;height:28px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.hint{margin:0;color:var(--muted);font-size:.92rem}.customlist{display:grid;gap:7px;max-height:220px;overflow:auto}.customitem{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px;border:1px solid var(--line);border-radius:9px}.danger-text{color:var(--danger)}
+    .toast{position:fixed;left:50%;bottom:18px;z-index:30;transform:translateX(-50%);max-width:calc(100% - 24px);padding:12px 18px;border-radius:999px;background:#172033;color:#fff;font-weight:800;box-shadow:0 6px 24px #0005}.toast[hidden]{display:none}
+    .emergency-card{padding:14px;border:3px solid #d92d20;border-radius:16px;background:#fff1f0}.emergency-card h2{margin-top:0;color:#b42318}.about-card{padding:14px;border:2px solid var(--line);border-radius:14px;background:var(--panel);font-size:1.08rem;line-height:1.5}
+    .large .word .lab{font-size:clamp(24px,4vw,34px)}.text-only .word .sym,.text-only .wordimg{display:none}.symbol-only .word .lab{font-size:.9rem}.symbol-only .word .sym{font-size:60px}
+    @media(max-width:760px){.actions{grid-template-columns:repeat(3,1fr)}.cats{top:220px}.board{grid-template-columns:repeat(min(var(--cols),3),minmax(0,1fr))}.grid2,.grid3{grid-template-columns:1fr}}
+    @media(max-width:480px){.board{grid-template-columns:repeat(min(var(--cols),2),minmax(0,1fr))}.word{min-height:112px}.cats{top:270px}.cloudline{width:100%}}
   </style>
- </head>
- <body>
-  <main class="app">
-   <header class="top">
-    <div>
-     <small>
-      Communication belongs to the communicator
-     </small>
-     <h1>
-      My Voice
-     </h1>
+</head>
+<body>
+<main class="app">
+  <header class="top">
+    <div class="brand"><small>Communication belongs to the communicator</small><h1>My Voice</h1><div class="cloudline" id="cloudStatus">Saved on this device</div></div>
+    <div class="top-actions">
+      <button class="pill" id="profileButton" type="button">👤 My Profile</button>
+      <button class="pill" id="cloudButton" type="button">Sign in with Google</button>
+      <button class="pill danger" id="emergencyButton" type="button">🚨 Help</button>
+      <button class="iconbtn" id="editButton" aria-label="Caregiver edit mode" type="button">🔒</button>
+      <button class="iconbtn" id="settingsButton" aria-label="Settings" type="button">⚙</button>
     </div>
-    <div class="cloudbar">
-     <span class="cloudstatus" id="cloudStatus">Saved on this device</span>
-     <button aria-label="Sign in with Google" class="cloudbutton google-signin" id="cloudButton" type="button">Sign in with Google</button>
-     <button aria-label="Voice settings" class="settings" id="settings">
-      ⚙
-     </button>
-    </div>
-   </header>
-   <section aria-label="Message composer" class="composer">
-    <div aria-live="polite" class="message" id="message">
-    </div>
-    <div class="actions">
-     <button class="action speak" id="speak">
-      🔊 Speak
-     </button>
-     <button class="action" id="undo">
-      ↶ Undo
-     </button>
-     <button class="action" id="del">
-      ⌫ Delete
-     </button>
-     <button class="action" id="clear">
-      × Clear
-     </button>
-    </div>
-   </section>
-   <nav aria-label="Word categories" class="cats" id="cats">
-   </nav>
-   <section aria-label="Communication words" class="board" id="board">
-   </section>
-  </main>
-  <dialog class="customize" id="customize">
-   <div class="panel">
-    <div class="top">
-     <h2>
-      Personalize
-     </h2>
-     <button aria-label="Close settings" class="settings" id="closeSettings">
-      ×
-     </button>
-    </div>
-    <label>
-     Voice
-     <select id="voice">
-      <option value="">
-       Automatic
-      </option>
-     </select>
-    </label>
-    <label>
-     Speaking speed
-     <output id="rateOut">
-      1.0
-     </output>
-     <input id="rate" max="1.5" min=".5" step=".1" type="range" value="1"/>
-    </label>
-    <label class="toggle">
-     Extra-large word labels
-     <input id="large" type="checkbox"/>
-    </label>
-    <hr/>
-    <h3>
-     Add a personal word
-    </h3>
-    <div class="formgrid">
-     <label>
-      Word or phrase
-      <input id="customLabel" maxlength="40" placeholder="Grandma"/>
-     </label>
-     <label>
-      Symbol
-      <input id="customSymbol" maxlength="8" placeholder="👵"/>
-     </label>
-     <label>
-      Category
-      <select id="customCategory">
-       <option>
-        Core
-       </option>
-       <option>
-        Needs
-       </option>
-       <option>
-        Feelings
-       </option>
-       <option>
-        Actions
-       </option>
-      </select>
-     </label>
-    </div>
-    <div class="mediafields">
-     <div class="filelabel">
-      <strong>
-       Photo
-      </strong>
-      <button class="action" id="takePhoto" type="button">
-       📷 Take picture
-      </button>
-      <button class="action" id="choosePhoto" type="button">
-       Choose photo file
-      </button>
-      <input accept="image/*" capture="environment" hidden="" id="customPhoto" type="file"/>
-      <span class="hint" id="photoStatus">
-       No photo selected.
-      </span>
-     </div>
-     <div class="filelabel">
-      <strong>
-       Voice recording
-      </strong>
-      <button class="action" id="recordAudio" type="button">
-       🎙️ Start recording
-      </button>
-      <button class="action" id="chooseAudio" type="button">
-       Choose audio file
-      </button>
-      <input accept="audio/*" capture="" hidden="" id="customAudio" type="file"/>
-      <span class="hint" id="audioStatus">
-       No audio selected.
-      </span>
-     </div>
-    </div>
-    <div class="backuprow">
-     <button class="action" id="clearPhoto" type="button">
-      Clear photo
-     </button>
-     <button class="action" id="clearAudio" type="button">
-      Clear audio
-     </button>
-    </div>
-    <button class="action speak" id="addCustom">
-     ＋ Add word
-    </button>
-    <p aria-live="polite" class="hint" id="addStatus" role="status">
-    </p>
-    <p class="hint">
-     Personal words and settings are saved on this device and sync to your Google account when signed in.
-    </p>
-    <div class="customlist" id="customList">
-    </div>
-    <h3>
-     Backup and restore
-    </h3>
-    <div class="backuprow">
-     <button class="action" id="backupProfile">
-      Download backup
-     </button>
-     <label class="action">
-      Restore backup
-      <input accept="application/json" hidden="" id="restoreProfile" type="file"/>
-     </label>
-    </div>
-    <div class="panelbuttons">
-     <button class="action" id="resetCustom">
-      Remove personal words
-     </button>
-     <button class="action speak" id="doneSettings">
-      Done
-     </button>
-    </div>
-   </div>
-  </dialog>
-  <dialog class="confirmbox" id="cameraDialog">
-   <div class="confirmbody">
-    <h2>
-     Take a picture
-    </h2>
-    <video autoplay="" id="cameraPreview" playsinline="" style="width:100%;max-height:55vh;border-radius:14px;background:#000">
-    </video>
-    <div class="confirmbuttons">
-     <button class="action" id="cancelCamera" type="button">
-      Cancel
-     </button>
-     <button class="action speak" id="capturePhoto" type="button">
-      Take picture
-     </button>
-    </div>
-   </div>
-  </dialog>
-  <dialog class="confirmbox" id="confirmDialog">
-   <div class="confirmbody">
-    <h2>
-     Confirm action
-    </h2>
-    <p id="confirmMessage">
-    </p>
-    <div class="confirmbuttons">
-     <button class="action" id="confirmCancel">
-      Cancel
-     </button>
-     <button class="action speak" id="confirmOkay">
-      Confirm
-     </button>
-    </div>
-   </div>
-  </dialog>
-  <div aria-live="polite" class="toast" hidden="" id="toast" role="status">
-  </div>
-  <script async defer src="https://accounts.google.com/gsi/client"></script>
-  <script>
-   (function() {
-    'use strict';
-    var data= {
-        Core:[['I','👤'],['you','👉'],['want','🙋'],['not','🚫'],['more','➕'],['different','🔄'],['help','🛟'],['stop','🛑'],['yes','✅'],['no','❌'],['like','👍'],["don't like",'👎']],Needs:[['eat','🍽️'],['drink','🥤'],['bathroom','🚻'],['break','⏸️'],['quiet','🤫'],['space','↔️'],['hurt','🩹'],['too loud','🔇']],Feelings:[['happy','😊'],['sad','😢'],['angry','😠'],['scared','😨'],['tired','😴'],['overwhelmed','🌪️'],['okay','🙂'],['excited','🤩']],Actions:[['go','➡️'],['come','⬅️'],['play','🧸'],['look','👀'],['listen','👂'],['make','🧩'],['open','📂'],['finished','🏁']]
-    }
-    ;
-    var key='my-voice-aac-v1',state= {
-        words:[],cat:'Core',custom:[],voice:'',rate:1,large:false,updatedAt:0
-    }
-    ,history=[],initializing=true;
-    try {
-        state=Object.assign(state,JSON.parse(localStorage.getItem(key)||'{}'))
-    }
-    catch(e) {
-    }
-    if(!Array.isArray(state.custom))state.custom=[];
-    if(!Number.isFinite(Number(state.updatedAt)))state.updatedAt=0;
-    var msg=document.getElementById('message'),board=document.getElementById('board'),cats=document.getElementById('cats'),speak=document.getElementById('speak'),del=document.getElementById('del'),undo=document.getElementById('undo'),clear=document.getElementById('clear');
-    function save() {
-        if(!initializing)state.updatedAt=Date.now();
-        localStorage.setItem(key,JSON.stringify(state));
-        if(!initializing)scheduleCloudSync()
-    }
-    function renderMessage() {
-        msg.innerHTML=state.words.length?'':'<span class="muted">Choose words below</span>';
-        if(state.words.length)msg.textContent=state.words.join(' ');
-        speak.disabled=del.disabled=clear.disabled=!state.words.length;
-        undo.disabled=!history.length;
-        save()
-    }
-    function renderCats() {
-        cats.innerHTML='';
-        Object.keys(data).forEach(function(name) {
-            var b=document.createElement('button');
-            b.className='cat'+(name===state.cat?' on':'');
-            b.textContent=name;
-            b.onclick=function() {
-                state.cat=name;
-                renderCats();
-                renderBoard();
-                save()
-            }
-            ;
-            cats.appendChild(b)
-        }
-        )
-    }
-    function renderBoard() {
-        board.innerHTML='';
-        (data[state.cat]||[]).concat(state.custom.filter(function(x) {
-            return x.cat===state.cat
-        }
-        ).map(function(x) {
-            return [x.label,x.photo||x.symbol,x.audio||'',x.id]
-        }
-        )).forEach(function(w) {
-            var b=document.createElement('button');
-            b.className='word';
-            b.setAttribute('aria-label','Add '+w[0]);
-            var s;
-            if(typeof w[1]==='string'&&w[1].indexOf('data:image/')===0) {
-                s=document.createElement('img');
-                s.className='wordimg';
-                s.src=w[1];
-                s.alt=''
-            }
-            else {
-                s=document.createElement('span');
-                s.className='sym';
-                s.setAttribute('aria-hidden','true');
-                s.textContent=w[1]
-            }
-            var l=document.createElement('span');
-            l.className='lab';
-            l.textContent=w[0];
-            b.appendChild(s);
-            b.appendChild(l);
-            b.onclick=function() {
-                history.push(state.words.slice());
-                state.words.push(w[0]);
-                renderMessage();
-                if(w[2]) {
-                    var a=new Audio(w[2]);
-                    a.play().catch(function() {
-                        say(w[0],false)
-                    }
-                    )
-                }
-                else say(w[0],false)
-            }
-            ;
-            board.appendChild(b)
-        }
-        )
-    }
-    function say(text,interrupt) {
-        if(!text||!('speechSynthesis' in window))return;
-        if(interrupt)speechSynthesis.cancel();
-        var u=new SpeechSynthesisUtterance(text.replace(/\?$/,'')),v=speechSynthesis.getVoices().find(function(x) {
-            return x.voiceURI===state.voice
-        }
-        );
-        if(v)u.voice=v;
-        u.rate=Number(state.rate)||1;
-        speechSynthesis.speak(u)
-    }
-    ;
-    speak.onclick=function() {
-        say(state.words.join(' '),true)
-    }
-    ;
-    del.onclick=function() {
-        if(state.words.length) {
-            history.push(state.words.slice());
-            state.words.pop();
-            renderMessage()
-        }
-    }
-    ;
-    undo.onclick=function() {
-        if(history.length) {
-            state.words=history.pop();
-            renderMessage()
-        }
-    }
-    ;
-    clear.onclick=function() {
-        if(state.words.length)ask('Clear the whole message?',function() {
-            history.push(state.words.slice());
-            state.words=[];
-            speechSynthesis.cancel();
-            renderMessage()
-        }
-        )
-    }
-    ;
-    var dialog=document.getElementById('customize'),voice=document.getElementById('voice'),rate=document.getElementById('rate'),rateOut=document.getElementById('rateOut'),large=document.getElementById('large'),customList=document.getElementById('customList');
-    function loadVoices() {
-        if(!('speechSynthesis' in window))return;
-        var vs=speechSynthesis.getVoices().filter(function(v) {
-            return v.lang.toLowerCase().indexOf('en')===0
-        }
-        );
-        voice.innerHTML='<option value="">Automatic</option>';
-        vs.forEach(function(v) {
-            var o=document.createElement('option');
-            o.value=v.voiceURI;
-            o.textContent=v.name+' ('+v.lang+')';
-            voice.appendChild(o)
-        }
-        );
-        voice.value=state.voice||''
-    }
-    function renderCustom() {
-        customList.innerHTML='';
-        state.custom.forEach(function(w,i) {
-            var row=document.createElement('div');
-            row.className='customitem';
-            var name=document.createElement('span');
-            name.textContent=w.symbol+' '+w.label+' · '+w.cat;
-            var remove=document.createElement('button');
-            remove.textContent='Remove';
-            remove.onclick=function() {
-                state.custom.splice(i,1);
-                save();
-                renderCustom();
-                renderBoard()
-            }
-            ;
-            row.appendChild(name);
-            row.appendChild(remove);
-            customList.appendChild(row)
-        }
-        );
-        if(!state.custom.length)customList.textContent='No personal words yet.'
-    }
-    document.getElementById('settings').onclick=function() {
-        loadVoices();
-        renderCustom();
-        dialog.showModal()
-    }
-    ;
-    document.getElementById('closeSettings').onclick=function() {
-        dialog.close()
-    }
-    ;
-    document.getElementById('doneSettings').onclick=function() {
-        dialog.close()
-    }
-    ;
-    var pendingConfirm=null,confirmDialog=document.getElementById('confirmDialog'),confirmMessage=document.getElementById('confirmMessage'),toast=document.getElementById('toast'),toastTimer;
-    function ask(message,action) {
-        pendingConfirm=action;
-        confirmMessage.textContent=message;
-        confirmDialog.showModal()
-    }
-    document.getElementById('confirmCancel').onclick=function() {
-        pendingConfirm=null;
-        confirmDialog.close()
-    }
-    ;
-    document.getElementById('confirmOkay').onclick=function() {
-        var action=pendingConfirm;
-        pendingConfirm=null;
-        confirmDialog.close();
-        if(action)action()
-    }
-    ;
-    function notify(message) {
-        toast.textContent=message;
-        toast.hidden=false;
-        clearTimeout(toastTimer);
-        toastTimer=setTimeout(function() {
-            toast.hidden=true
-        }
-        ,3500)
-    }
-    var GOOGLE_CLIENT_ID=(document.querySelector('meta[name="google-client-id"]')||{}).content||'';
-    var DRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
-    var accessToken='',tokenExpiresAt=0,tokenClient=null,cloudTimer=null,cloudBusy=false,driveIds={root:'',photos:'',audio:'',profile:''};
-    var cloudButton=document.getElementById('cloudButton'),cloudStatus=document.getElementById('cloudStatus');
-    function cloudConfigured() {
-        return GOOGLE_CLIENT_ID&&GOOGLE_CLIENT_ID.indexOf('PASTE_YOUR_')!==0
-    }
-    function setCloudStatus(text,connected) {
-        cloudStatus.textContent=text;
-        cloudButton.classList.toggle('on',!!connected);
-        cloudButton.textContent=connected?'Sync now':'Sign in with Google'
-    }
-    function waitForGoogleIdentity() {
-        return new Promise(function(resolve,reject) {
-            if(window.google&&google.accounts&&google.accounts.oauth2)return resolve();
-            var started=Date.now(),timer=setInterval(function() {
-                if(window.google&&google.accounts&&google.accounts.oauth2) {
-                    clearInterval(timer);resolve()
-                } else if(Date.now()-started>10000) {
-                    clearInterval(timer);reject(new Error('Google sign-in could not load. Check the internet connection.'))
-                }
-            },100)
-        })
-    }
-    function authorize(promptMode) {
-        if(!cloudConfigured())return Promise.reject(new Error('Google sign-in has not been configured for this site yet.'));
-        if(accessToken&&Date.now()<tokenExpiresAt-60000)return Promise.resolve(accessToken);
-        return waitForGoogleIdentity().then(function() {
-            return new Promise(function(resolve,reject) {
-                if(!tokenClient)tokenClient=google.accounts.oauth2.initTokenClient({
-                    client_id:GOOGLE_CLIENT_ID,
-                    scope:DRIVE_SCOPE,
-                    callback:function(){}
-                });
-                tokenClient.callback=function(resp) {
-                    if(resp.error)return reject(new Error(resp.error_description||resp.error));
-                    accessToken=resp.access_token;
-                    tokenExpiresAt=Date.now()+(Number(resp.expires_in)||3600)*1000;
-                    setCloudStatus('Signed in with Google',true);
-                    resolve(accessToken)
-                };
-                tokenClient.requestAccessToken({prompt:promptMode||''})
-            })
-        })
-    }
-    function driveFetch(url,options) {
-        options=options||{};
-        options.headers=Object.assign({},options.headers||{}, {Authorization:'Bearer '+accessToken});
-        return fetch(url,options).then(function(response) {
-            if(response.status===401) {
-                accessToken='';tokenExpiresAt=0;
-                throw new Error('Your Google session expired. Sign in again.')
-            }
-            if(!response.ok)return response.text().then(function(text) {
-                throw new Error('Google Drive error '+response.status+(text?': '+text.slice(0,220):''))
-            });
-            return response
-        })
-    }
-    function driveJson(url,options) {
-        return driveFetch(url,options).then(function(r){return r.json()})
-    }
-    function findDriveFile(q) {
-        var url='https://www.googleapis.com/drive/v3/files?spaces=drive&pageSize=20&fields=files(id,name,mimeType,modifiedTime,parents,appProperties)&q='+encodeURIComponent(q);
-        return driveJson(url).then(function(data){return data.files&&data.files[0]||null})
-    }
-    function createMetadata(metadata) {
-        return driveJson('https://www.googleapis.com/drive/v3/files?fields=id,name,mimeType,parents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(metadata)})
-    }
-    function ensureFolder(name,parentId,markerKey) {
-        var q="mimeType='application/vnd.google-apps.folder' and trashed=false"+(parentId?" and '"+parentId+"' in parents":'')+" and appProperties has { key='"+markerKey+"' and value='1' }";
-        return findDriveFile(q).then(function(found) {
-            if(found)return found.id;
-            var meta={name:name,mimeType:'application/vnd.google-apps.folder',appProperties:{}};
-            meta.appProperties[markerKey]='1';
-            if(parentId)meta.parents=[parentId];
-            return createMetadata(meta).then(function(x){return x.id})
-        })
-    }
-    function ensureDriveStructure() {
-        return ensureFolder('My Voice','', 'myVoiceRoot').then(function(id) {
-            driveIds.root=id;
-            return Promise.all([ensureFolder('Photos',id,'myVoicePhotos'),ensureFolder('Audio',id,'myVoiceAudio')])
-        }).then(function(ids) {
-            driveIds.photos=ids[0];driveIds.audio=ids[1];
-            return findDriveFile("trashed=false and '"+driveIds.root+"' in parents and appProperties has { key='myVoiceProfile' and value='1' }")
-        }).then(function(profile) {
-            driveIds.profile=profile?profile.id:'';
-            return driveIds
-        })
-    }
-    function dataUrlToBlob(dataUrl) {
-        var parts=dataUrl.split(','),match=(parts[0]||'').match(/data:([^;]+)/),mime=match?match[1]:'application/octet-stream';
-        var bytes=atob(parts[1]||''),arr=new Uint8Array(bytes.length);
-        for(var i=0;i<bytes.length;i++)arr[i]=bytes.charCodeAt(i);
-        return new Blob([arr],{type:mime})
-    }
-    function blobToDataUrl(blob) {
-        return new Promise(function(resolve,reject) {
-            var reader=new FileReader();reader.onload=function(){resolve(reader.result)};reader.onerror=reject;reader.readAsDataURL(blob)
-        })
-    }
-    function extensionForMime(mime) {
-        if(mime==='image/jpeg')return '.jpg';if(mime==='image/png')return '.png';if(mime==='image/webp')return '.webp';
-        if(mime.indexOf('audio/webm')===0)return '.webm';if(mime.indexOf('audio/mp4')===0)return '.m4a';if(mime.indexOf('audio/mpeg')===0)return '.mp3';return ''
-    }
-    function uploadBlob(blob,name,parentId,kind,wordId) {
-        var boundary='myvoice_'+Math.random().toString(36).slice(2),metadata={name:name,parents:[parentId],appProperties:kind==='profile'?{myVoiceProfile:'1'}:{myVoiceMedia:'1',mediaKind:kind,wordId:String(wordId||'')}};
-        var body=new Blob(['--'+boundary+'\r\n','Content-Type: application/json; charset=UTF-8\r\n\r\n',JSON.stringify(metadata),'\r\n--'+boundary+'\r\n','Content-Type: '+(blob.type||'application/octet-stream')+'\r\n\r\n',blob,'\r\n--'+boundary+'--']);
-        return driveJson('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+boundary},body:body})
-    }
-    function uploadPendingMedia() {
-        var chain=Promise.resolve();
-        state.custom.forEach(function(word) {
-            if(word.photo&&word.photo.indexOf('data:image/')===0&&!word.photoFileId)chain=chain.then(function() {
-                var blob=dataUrlToBlob(word.photo);
-                return uploadBlob(blob,(word.label||'word')+'-'+word.id+extensionForMime(blob.type),driveIds.photos,'photo',word.id).then(function(file){word.photoFileId=file.id})
-            });
-            if(word.audio&&word.audio.indexOf('data:audio/')===0&&!word.audioFileId)chain=chain.then(function() {
-                var blob=dataUrlToBlob(word.audio);
-                return uploadBlob(blob,(word.label||'word')+'-'+word.id+extensionForMime(blob.type),driveIds.audio,'audio',word.id).then(function(file){word.audioFileId=file.id})
-            })
-        });
-        return chain
-    }
-    function cloudProfile() {
-        return {
-            format:'my-voice-cloud-profile',version:1,updatedAt:Number(state.updatedAt)||Date.now(),
-            state:{words:state.words,cat:state.cat,voice:state.voice,rate:state.rate,large:state.large,updatedAt:Number(state.updatedAt)||Date.now(),custom:state.custom.map(function(word) {
-                return {id:word.id,label:word.label,symbol:word.symbol,cat:word.cat,photoFileId:word.photoFileId||'',audioFileId:word.audioFileId||''}
-            })}
-        }
-    }
-    function writeCloudProfile() {
-        var blob=new Blob([JSON.stringify(cloudProfile(),null,2)],{type:'application/json'});
-        if(driveIds.profile)return driveFetch('https://www.googleapis.com/upload/drive/v3/files/'+driveIds.profile+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':'application/json'},body:blob});
-        return uploadBlob(blob,'profile.json',driveIds.root,'profile','profile').then(function(file){driveIds.profile=file.id})
-    }
-    function readCloudProfile() {
-        if(!driveIds.profile)return Promise.resolve(null);
-        return driveFetch('https://www.googleapis.com/drive/v3/files/'+driveIds.profile+'?alt=media').then(function(r){return r.json()})
-    }
-    function hydrateRemoteMedia(remoteState) {
-        var jobs=[];
-        (remoteState.custom||[]).forEach(function(word) {
-            if(word.photoFileId)jobs.push(driveFetch('https://www.googleapis.com/drive/v3/files/'+word.photoFileId+'?alt=media').then(function(r){return r.blob()}).then(blobToDataUrl).then(function(data){word.photo=data}).catch(function(){word.photo=''}));
-            if(word.audioFileId)jobs.push(driveFetch('https://www.googleapis.com/drive/v3/files/'+word.audioFileId+'?alt=media').then(function(r){return r.blob()}).then(blobToDataUrl).then(function(data){word.audio=data}).catch(function(){word.audio=''}));
-        });
-        return Promise.all(jobs).then(function(){return remoteState})
-    }
-    function applyRemote(remote) {
-        var rs=Object.assign({words:[],cat:'Core',custom:[],voice:'',rate:1,large:false,updatedAt:0},remote.state||{});
-        return hydrateRemoteMedia(rs).then(function() {
-            initializing=true;
-            state=rs;
-            if(!Array.isArray(state.custom))state.custom=[];
-            localStorage.setItem(key,JSON.stringify(state));
-            rate.value=state.rate||1;rateOut.value=Number(rate.value).toFixed(1);large.checked=!!state.large;document.body.classList.toggle('large',!!state.large);
-            renderCats();renderBoard();renderMessage();renderCustom();
-            initializing=false;
-            notify('Your My Voice profile was restored.')
-        })
-    }
-    function performCloudSync(forcePull) {
-        if(cloudBusy)return Promise.resolve();
-        cloudBusy=true;setCloudStatus('Syncing…',true);
-        return authorize('').then(ensureDriveStructure).then(function() {
-            return readCloudProfile()
-        }).then(function(remote) {
-            var remoteUpdated=remote&&Number(remote.updatedAt||remote.state&&remote.state.updatedAt)||0;
-            var localUpdated=Number(state.updatedAt)||0;
-            if(remote&&(forcePull||remoteUpdated>localUpdated))return applyRemote(remote).then(function(){return 'pulled'});
-            return uploadPendingMedia().then(writeCloudProfile).then(function(){localStorage.setItem(key,JSON.stringify(state));return 'pushed'})
-        }).then(function(direction) {
-            setCloudStatus(direction==='pulled'?'Your account is up to date':'Your account is up to date',true)
-        }).catch(function(error) {
-            setCloudStatus('Saved on this device',false);notify(error.message)
-        }).finally(function(){cloudBusy=false})
-    }
-    function scheduleCloudSync() {
-        if(!accessToken)return;
-        clearTimeout(cloudTimer);cloudTimer=setTimeout(function(){performCloudSync(false)},1800)
-    }
-    cloudButton.onclick=function() {
-        if(!cloudConfigured()) {
-            notify('Google sign-in has not been configured for this site yet.');return
-        }
-        if(accessToken) {performCloudSync(false);return}
-        authorize('consent').then(function(){return performCloudSync(false)}).catch(function(error){notify(error.message)})
-    };
+  </header>
 
-    function readData(input,max,label) {
-        return new Promise(function(resolve,reject) {
-            var file=input.files&&input.files[0];
-            if(!file)return resolve('');
-            if(file.size>max)return reject(new Error(label+' is too large. Choose a smaller file.'));
-            var reader=new FileReader();
-            reader.onload=function() {
-                resolve(reader.result)
-            }
-            ;
-            reader.onerror=function() {
-                reject(new Error(label+' could not be read.'))
-            }
-            ;
-            reader.readAsDataURL(file)
-        }
-        )
-    }
-    document.getElementById('backupProfile').onclick=function() {
-        var blob=new Blob([JSON.stringify( {
-            format:'my-voice-profile',version:1,state:state
-        }
-        ,null,2)], {
-            type:'application/json'
-        }
-        ),url=URL.createObjectURL(blob),a=document.createElement('a');
-        a.href=url;
-        a.download='my-voice-profile.json';
-        a.click();
-        setTimeout(function() {
-            URL.revokeObjectURL(url)
-        }
-        ,1000)
-    }
-    ;
-    document.getElementById('restoreProfile').onchange=function(event) {
-        var file=event.target.files[0];
-        if(!file)return;
-        var reader=new FileReader();
-        reader.onload=function() {
-            try {
-                var backup=JSON.parse(reader.result);
-                if(backup.format!=='my-voice-profile'||!backup.state)throw new Error('Not a My Voice profile backup.');
-                state=Object.assign( {
-                    words:[],cat:'Core',custom:[],voice:'',rate:1,large:false
-                }
-                ,backup.state);
-                if(!Array.isArray(state.custom))throw new Error('Backup profile is damaged.');
-                save();
-                renderCats();
-                renderBoard();
-                renderMessage();
-                renderCustom();
-                notify('Profile restored.')
-            }
-            catch(error) {
-                notify(error.message)
-            }
-        }
-        ;
-        reader.readAsText(file)
-    }
-    ;
-    var cameraStream=null,mediaRecorder=null,audioChunks=[];
-    var photoInput=document.getElementById('customPhoto'),audioInput=document.getElementById('customAudio'),photoStatus=document.getElementById('photoStatus'),audioStatus=document.getElementById('audioStatus'),cameraDialog=document.getElementById('cameraDialog'),cameraPreview=document.getElementById('cameraPreview');
-    function stopCamera() {
-        if(cameraStream) {
-            cameraStream.getTracks().forEach(function(track) {
-                track.stop()
-            }
-            );
-            cameraStream=null
-        }
-        cameraPreview.srcObject=null
-    }
-    document.getElementById('choosePhoto').onclick=function() {
-        photoInput.click()
-    }
-    ;
-    document.getElementById('chooseAudio').onclick=function() {
-        audioInput.click()
-    }
-    ;
-    photoInput.onchange=function() {
-        photoInput._capturedData='';
-        photoStatus.textContent=photoInput.files&&photoInput.files[0]?'Selected: '+photoInput.files[0].name:'No photo selected.'
-    }
-    ;
-    audioInput.onchange=function() {
-        audioInput._capturedData='';
-        audioStatus.textContent=audioInput.files&&audioInput.files[0]?'Selected: '+audioInput.files[0].name:'No audio selected.'
-    }
-    ;
-    document.getElementById('takePhoto').onclick=function() {
-        if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) {
-            photoStatus.textContent='Camera capture is unavailable here. Use Choose photo file.';
-            return
-        }
-        navigator.mediaDevices.getUserMedia( {
-            video: {
-                facingMode: {
-                    ideal:'environment'
-                }
-            }
-            ,audio:false
-        }
-        ).then(function(stream) {
-            cameraStream=stream;
-            cameraPreview.srcObject=stream;
-            cameraDialog.showModal()
-        }
-        ).catch(function() {
-            photoStatus.textContent='Camera permission was not granted. Use Choose photo file.'
-        }
-        )
-    }
-    ;
-    document.getElementById('cancelCamera').onclick=function() {
-        stopCamera();
-        cameraDialog.close()
-    }
-    ;
-    document.getElementById('capturePhoto').onclick=function() {
-        var width=cameraPreview.videoWidth||800,height=cameraPreview.videoHeight||600,scale=Math.min(1,800/width),canvas=document.createElement('canvas');
-        canvas.width=Math.round(width*scale);
-        canvas.height=Math.round(height*scale);
-        canvas.getContext('2d').drawImage(cameraPreview,0,0,canvas.width,canvas.height);
-        photoInput._capturedData=canvas.toDataURL('image/jpeg',.72);
-        photoInput.value='';
-        photoStatus.textContent='New picture captured.';
-        stopCamera();
-        cameraDialog.close()
-    }
-    ;
-    document.getElementById('recordAudio').onclick=function() {
-        var button=this;
-        if(mediaRecorder&&mediaRecorder.state==='recording') {
-            mediaRecorder.stop();
-            return
-        }
-        if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder) {
-            audioStatus.textContent='In-browser recording is unavailable here. Use Choose audio file.';
-            return
-        }
-        navigator.mediaDevices.getUserMedia( {
-            audio:true
-        }
-        ).then(function(stream) {
-            audioChunks=[];
-            mediaRecorder=new MediaRecorder(stream);
-            mediaRecorder.ondataavailable=function(event) {
-                if(event.data.size)audioChunks.push(event.data)
-            }
-            ;
-            mediaRecorder.onstop=function() {
-                stream.getTracks().forEach(function(track) {
-                    track.stop()
-                }
-                );
-                var blob=new Blob(audioChunks, {
-                    type:mediaRecorder.mimeType||'audio/webm'
-                }
-                ),reader=new FileReader();
-                reader.onload=function() {
-                    audioInput._capturedData=reader.result;
-                    audioInput.value='';
-                    audioStatus.textContent='New voice recording captured.';
-                    button.textContent='🎙️ Start recording'
-                }
-                ;
-                reader.readAsDataURL(blob)
-            }
-            ;
-            mediaRecorder.start();
-            button.textContent='⏹ Stop recording';
-            audioStatus.textContent='Recording… Tap Stop when finished.';
-            setTimeout(function() {
-                if(mediaRecorder&&mediaRecorder.state==='recording')mediaRecorder.stop()
-            }
-            ,10000)
-        }
-        ).catch(function() {
-            audioStatus.textContent='Microphone permission was not granted. Use Choose audio file.'
-        }
-        )
-    }
-    ;
-    document.getElementById('clearPhoto').onclick=function() {
-        photoInput.value='';
-        photoInput._capturedData='';
-        photoStatus.textContent='No photo selected.';
-        document.getElementById('addStatus').textContent='Photo selection cleared.'
-    }
-    ;
-    document.getElementById('clearAudio').onclick=function() {
-        if(mediaRecorder&&mediaRecorder.state==='recording')mediaRecorder.stop();
-        audioInput.value='';
-        audioInput._capturedData='';
-        audioStatus.textContent='No audio selected.';
-        document.getElementById('recordAudio').textContent='🎙️ Start recording';
-        document.getElementById('addStatus').textContent='Audio selection cleared.'
-    }
-    ;
-    document.getElementById('addCustom').onclick=function() {
-        var label=document.getElementById('customLabel'),symbol=document.getElementById('customSymbol'),cat=document.getElementById('customCategory'),status=document.getElementById('addStatus'),photoInput=document.getElementById('customPhoto'),audioInput=document.getElementById('customAudio');
-        status.textContent='';
-        if(!label.value.trim()) {
-            status.textContent='Enter a word or phrase first.';
-            label.focus();
-            return
-        }
-        function optionalMedia(input,max,name) {
-            return new Promise(function(resolve) {
-                if(input._capturedData) {
-                    var capturedBytes=Math.ceil(input._capturedData.length*3/4);
-                    if(capturedBytes>max)return resolve( {
-                        data:'',warning:name+' was too large and was skipped. Keep it under '+Math.round(max/1000)+' KB.'
-                    }
-                    );
-                    return resolve( {
-                        data:input._capturedData,warning:''
-                    }
-                    )
-                }
-                var file=input.files&&input.files[0];
-                if(!file)return resolve( {
-                    data:'',warning:''
-                }
-                );
-                if(file.size>max)return resolve( {
-                    data:'',warning:name+' was too large and was skipped. Use a file under '+Math.round(max/1000)+' KB.'
-                }
-                );
-                var reader=new FileReader();
-                reader.onload=function() {
-                    resolve( {
-                        data:reader.result,warning:''
-                    }
-                    )
-                }
-                ;
-                reader.onerror=function() {
-                    resolve( {
-                        data:'',warning:name+' could not be read and was skipped.'
-                    }
-                    )
-                }
-                ;
-                reader.readAsDataURL(file)
-            }
-            )
-        }
-        Promise.all([optionalMedia(photoInput,800000,'Photo'),optionalMedia(audioInput,2000000,'Recording')]).then(function(media) {
-            var word= {
-                id:'custom-'+Date.now(),label:label.value.trim(),symbol:symbol.value.trim()||'💬',cat:cat.value,photo:media[0].data,audio:media[1].data
-            }
-            ;
-            state.custom.push(word);
-            try {
-                save()
-            }
-            catch(error) {
-                state.custom.pop();
-                photoInput.value='';
-                audioInput.value='';
-                photoInput._capturedData='';
-                audioInput._capturedData='';
-                photoStatus.textContent='No photo selected.';
-                audioStatus.textContent='No audio selected.';
-                status.textContent='This browser is out of storage space. Try shorter audio, a smaller photo, or download a backup and remove unused personal words.';
-                return
-            }
-            label.value='';
-            symbol.value='';
-            photoInput.value='';
-            audioInput.value='';
-            photoInput._capturedData='';
-            audioInput._capturedData='';
-            photoStatus.textContent='No photo selected.';
-            audioStatus.textContent='No audio selected.';
-            renderCustom();
-            state.cat=cat.value;
-            renderCats();
-            renderBoard();
-            var warnings=media.map(function(item) {
-                return item.warning
-            }
-            ).filter(Boolean);
-            status.textContent='✓ Added '+word.label+' to '+cat.value+'.'+(warnings.length?' '+warnings.join(' '):'');
-            notify(warnings.length?'Word added without oversized media.':'Added '+word.label+' to '+cat.value)
-        }
-        )
-    }
-    ;
-    document.getElementById('resetCustom').onclick=function() {
-        if(state.custom.length)ask('Remove all personal words from this tablet?',function() {
-            state.custom=[];
-            save();
-            renderCustom();
-            renderBoard()
-        }
-        )
-    }
-    ;
-    voice.onchange=function() {
-        state.voice=voice.value;
-        save()
-    }
-    ;
-    rate.value=state.rate||1;
-    rateOut.value=Number(rate.value).toFixed(1);
-    rate.oninput=function() {
-        state.rate=Number(rate.value);
-        rateOut.value=state.rate.toFixed(1);
-        save()
-    }
-    ;
-    large.checked=!!state.large;
-    document.body.classList.toggle('large',!!state.large);
-    large.onchange=function() {
-        state.large=large.checked;
-        document.body.classList.toggle('large',state.large);
-        save()
-    }
-    ;
-    if('speechSynthesis' in window)speechSynthesis.onvoiceschanged=loadVoices;
-    renderCats();
-    renderBoard();
-    renderMessage();
-    initializing=false;
-    if(!cloudConfigured())setCloudStatus('Google sync needs setup',false)
-}
-)();
-  </script>
- </body>
+  <section class="composer" aria-label="Message composer">
+    <div class="message" id="message" aria-live="polite"><span class="muted">Choose words below</span></div>
+    <div class="actions">
+      <button class="action speak" id="speak">🔊 Speak</button>
+      <button class="action" id="undo">↶ Undo</button>
+      <button class="action" id="del">⌫ Delete</button>
+      <button class="action" id="clear">× Clear</button>
+      <button class="action" id="savePhrase">★ Save phrase</button>
+      <button class="action" id="historyButton">🕘 Recent</button>
+    </div>
+  </section>
+
+  <div class="suggestions" id="suggestions" aria-label="Suggested next words"></div>
+  <nav class="cats" id="cats" aria-label="Communication categories"></nav>
+  <section class="board" id="board" aria-label="Communication words"></section>
+</main>
+
+<dialog class="settings-dialog" id="settingsDialog"><div class="panel">
+  <div class="top"><h2>My Voice settings</h2><button class="iconbtn" data-close="settingsDialog">×</button></div>
+  <div class="grid2">
+    <label>Voice<select id="voice"><option value="">Automatic</option></select></label>
+    <label>Speaking speed <output id="rateOut">1.0</output><input id="rate" type="range" min=".5" max="1.5" step=".1" value="1"></label>
+    <label>Grid size<select id="gridSize"><option value="2">2 × 2 huge</option><option value="3">3 columns</option><option value="4">4 columns</option><option value="5">5 columns</option><option value="6">6 columns</option></select></label>
+    <label>Button display<select id="displayMode"><option value="both">Symbol/photo + text</option><option value="text">Text only</option><option value="symbol">Large symbol + small text</option></select></label>
+    <label>Hold to select<select id="holdMs"><option value="0">Off</option><option value="300">0.3 seconds</option><option value="600">0.6 seconds</option><option value="1000">1 second</option></select></label>
+    <label>Ignore repeat taps<select id="lockoutMs"><option value="0">Off</option><option value="250">0.25 seconds</option><option value="500">0.5 seconds</option><option value="1000">1 second</option></select></label>
+  </div>
+  <label class="toggle">Extra-large labels<input id="largeLabels" type="checkbox"></label>
+  <label class="toggle">High contrast<input id="highContrast" type="checkbox"></label>
+  <label class="toggle">Switch / keyboard auto scanning<input id="scanEnabled" type="checkbox"></label>
+  <label>Scanning speed<select id="scanSeconds"><option value="1">1 second</option><option value="1.5">1.5 seconds</option><option value="2">2 seconds</option><option value="3">3 seconds</option></select></label>
+  <p class="hint">With scanning enabled, the highlighted communication button advances automatically. Press Space or Enter to select it.</p>
+  <div class="row"><button class="pill primary" data-close="settingsDialog">Done</button></div>
+</div></dialog>
+
+<dialog class="settings-dialog" id="caregiverDialog"><div class="panel">
+  <div class="top"><h2>Caregiver / editor</h2><button class="iconbtn" data-close="caregiverDialog">×</button></div>
+  <p class="hint">Editing is separated from communication so buttons are harder to change accidentally.</p>
+  <div class="grid2">
+    <label>Word or phrase<input id="customLabel" maxlength="80" placeholder="Grandma"></label>
+    <label>Symbol<input id="customSymbol" maxlength="8" placeholder="👵"></label>
+    <label>Category<select id="customCategory"></select></label>
+    <label>Photo<input id="customPhoto" type="file" accept="image/*" capture="environment"></label>
+    <label>Recorded / uploaded voice<input id="customAudio" type="file" accept="audio/*" capture></label>
+    <label>Or record now<button class="pill" id="recordAudio" type="button">🎙 Start recording</button></label>
+  </div>
+  <button class="pill primary" id="addCustom" type="button">＋ Add personal button</button>
+  <div class="customlist" id="customList"></div>
+  <hr>
+  <h3>Profiles</h3>
+  <div class="row"><select id="profileSelect"></select><button class="pill" id="addProfile">＋ New profile</button><button class="pill" id="renameProfile">Rename</button><button class="pill danger" id="removeProfile">Remove</button></div>
+  <hr>
+  <h3>About me / emergency card</h3>
+  <div class="grid2"><label>Name<input id="aboutName"></label><label>Contact / caregiver<input id="aboutContact"></label></div>
+  <label>Important communication notes<textarea id="aboutNotes" placeholder="I use this device to communicate. Please give me time to respond."></textarea></label>
+  <button class="pill" id="saveAbout">Save About Me</button>
+  <hr>
+  <h3>Visual scenes</h3>
+  <p class="hint">Create a scene from a real photo. Open the Scenes page, enter editor mode, then tap the photo to add spoken hotspots.</p>
+  <div class="grid2"><label>Scene name<input id="sceneName" placeholder="Kitchen"></label><label>Scene photo<input id="scenePhoto" type="file" accept="image/*" capture="environment"></label></div>
+  <button class="pill" id="addScene">＋ Add scene</button>
+  <div class="customlist" id="sceneList"></div>
+  <hr>
+  <h3>Caregiver PIN</h3>
+  <div class="row"><input id="newPin" type="password" inputmode="numeric" maxlength="8" placeholder="New PIN"><button class="pill" id="setPin">Set / change PIN</button></div>
+  <hr>
+  <h3>Backup</h3>
+  <div class="row"><button class="pill" id="backupProfile">Download backup</button><label class="pill">Restore backup<input id="restoreProfile" type="file" accept="application/json" hidden></label></div>
+  <div class="row"><button class="pill primary" id="exitEdit">Finish editing</button></div>
+</div></dialog>
+
+<dialog id="pinDialog"><div class="panel"><h2 id="pinTitle">Caregiver PIN</h2><p class="hint" id="pinHint"></p><input id="pinInput" type="password" inputmode="numeric" maxlength="8" placeholder="PIN"><div class="row"><button class="pill" data-close="pinDialog">Cancel</button><button class="pill primary" id="pinOkay">Continue</button></div></div></dialog>
+<dialog class="settings-dialog" id="recentDialog"><div class="panel"><div class="top"><h2>Recent & saved phrases</h2><button class="iconbtn" data-close="recentDialog">×</button></div><h3>Saved phrases</h3><div class="customlist" id="phraseList"></div><h3>Recently spoken</h3><div class="customlist" id="recentList"></div></div></dialog>
+<dialog id="confirmDialog"><div class="panel"><h2>Confirm</h2><p id="confirmMessage"></p><div class="row"><button class="pill" id="confirmCancel">Cancel</button><button class="pill primary" id="confirmOkay">Confirm</button></div></div></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script async defer src="https://accounts.google.com/gsi/client"></script>
+<script>
+(function(){
+'use strict';
+
+var BUILTINS={
+  Core:[['I','👤'],['you','👉'],['me','🙋'],['want','🤲'],['need','❗'],['like','👍'],["don't",'🚫'],['more','➕'],['different','🔄'],['again','🔁'],['help','🛟'],['stop','🛑'],['yes','✅'],['no','❌'],['good','🙂'],['bad','🙁'],['here','📍'],['there','➡️'],['what','❓'],['where','🗺️'],['who','👥'],['why','🤔'],['please','🙏'],['thank you','💙']],
+  Needs:[['eat','🍽️'],['drink','🥤'],['bathroom','🚻'],['break','⏸️'],['quiet','🤫'],['space','↔️'],['hurt','🩹'],['medicine','💊'],['sleep','🛏️'],['hot','🔥'],['cold','🥶'],['too loud','🔇']],
+  Feelings:[['happy','😊'],['sad','😢'],['angry','😠'],['scared','😨'],['tired','😴'],['overwhelmed','🌪️'],['okay','🙂'],['excited','🤩'],['worried','😟'],['frustrated','😤'],['sick','🤢'],['calm','😌']],
+  Actions:[['go','➡️'],['come','⬅️'],['play','🧸'],['look','👀'],['listen','👂'],['make','🧩'],['open','📂'],['close','🚪'],['get','📦'],['give','🤲'],['do','✅'],['finished','🏁']],
+  People:[['Mom','👩'],['Dad','👨'],['Grandma','👵'],['Grandpa','👴'],['friend','🧑‍🤝‍🧑'],['teacher','🧑‍🏫'],['doctor','🧑‍⚕️'],['me','🙋']],
+  Food:[['food','🍽️'],['pizza','🍕'],['chicken nuggets','🍗'],['burger','🍔'],['fries','🍟'],['sandwich','🥪'],['fruit','🍎'],['snack','🍿'],['ice cream','🍦']],
+  Drinks:[['drink','🥤'],['water','💧'],['juice','🧃'],['milk','🥛'],['soda','🥤'],['coffee','☕']],
+  Places:[['home','🏠'],['school','🏫'],['outside','🌳'],['store','🏪'],['bathroom','🚻'],['bedroom','🛏️'],['car','🚗'],['doctor','🏥']],
+  Social:[['hi','👋'],['bye','👋'],['I love you','❤️'],['that is funny','😂'],['that is awesome','🤩'],['what are you doing?','❓'],['want to play?','🎮'],['leave me alone','✋'],['I disagree','🙅'],['I have something to say','💬']],
+  Quick:[['I need help.','🛟'],["I don't understand.",'🤷'],['Give me a minute.','⏳'],['Please stop.','🛑'],['Something hurts.','🩹'],['I need the bathroom.','🚻'],["I don't want that.",'🚫'],['I need a break.','⏸️'],['I want to go home.','🏠'],['Please ask me yes or no.','✅']],
+  Emergency:[['I NEED HELP','🚨'],['I AM HURT','🩹'],['CALL MY CAREGIVER','📞'],['CALL 911','☎️'],["I CAN'T BREATHE",'🫁'],['I NEED MY MEDICINE','💊'],['YES','✅'],['NO','❌']]
+};
+var CAT_ORDER=['Core','Needs','Feelings','Actions','People','Food','Drinks','Places','Social','Quick','Favorites','Scenes','Emergency'];
+var NEXT={I:['want','need','like','am','feel'],you:['are','want','can','help'],want:['to','more','food','drink','that','go'],need:['help','bathroom','break','drink','medicine'],go:['home','outside','school','there'],more:['please','food','drink','time'],feel:['happy','sad','angry','sick','tired'],not:['that','now','good'],yes:['please'],no:['thank you']};
+var STORAGE_KEY='my-voice-aac-v2';
+var LEGACY_KEY='my-voice-aac-v1';
+var DEFAULT_SETTINGS={voice:'',rate:1,large:false,grid:4,displayMode:'both',holdMs:0,lockoutMs:250,contrast:false,scanEnabled:false,scanSeconds:1.5};
+function newProfile(name){return {id:'p-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),name:name||'My Profile',cat:'Core',words:[],custom:[],favorites:[],phrases:[],recent:[],scenes:[],settings:Object.assign({},DEFAULT_SETTINGS),caregiver:{pin:''},about:{name:'',contact:'',notes:'I use this device to communicate. Please give me time to respond.'},updatedAt:Date.now()};}
+function newApp(){var p=newProfile('My Profile');p.updatedAt=0;return {format:'my-voice-app',version:2,activeProfileId:p.id,profiles:[p],updatedAt:0};}
+var app=newApp(),history=[],initializing=true,editMode=false,lastActivation=0,holdTimer=null,scanTimer=null,scanIndex=-1,scanButtons=[];
+try{var saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(saved&&saved.profiles)app=saved;}catch(e){}
+if(!localStorage.getItem(STORAGE_KEY))migrateLegacy();
+function migrateLegacy(){try{var old=JSON.parse(localStorage.getItem(LEGACY_KEY)||'null');if(!old)return;var p=app.profiles[0];p.custom=Array.isArray(old.custom)?old.custom:[];p.settings.voice=old.voice||'';p.settings.rate=Number(old.rate)||1;p.settings.large=!!old.large;p.words=Array.isArray(old.words)?old.words:[];p.cat=old.cat||'Core';p.updatedAt=Number(old.updatedAt)||Date.now();app.updatedAt=p.updatedAt;localStorage.setItem(STORAGE_KEY,JSON.stringify(app));}catch(e){}}
+function profile(){var p=app.profiles.find(function(x){return x.id===app.activeProfileId});if(!p){p=app.profiles[0];app.activeProfileId=p.id;}normalizeProfile(p);return p;}
+function normalizeProfile(p){p.custom=Array.isArray(p.custom)?p.custom:[];p.favorites=Array.isArray(p.favorites)?p.favorites:[];p.phrases=Array.isArray(p.phrases)?p.phrases:[];p.recent=Array.isArray(p.recent)?p.recent:[];p.scenes=Array.isArray(p.scenes)?p.scenes:[];p.words=Array.isArray(p.words)?p.words:[];p.settings=Object.assign({},DEFAULT_SETTINGS,p.settings||{});p.caregiver=Object.assign({pin:''},p.caregiver||{});p.about=Object.assign({name:'',contact:'',notes:''},p.about||{});if(!p.cat)p.cat='Core';}
+function save(){if(!initializing){profile().updatedAt=Date.now();app.updatedAt=Date.now();}localStorage.setItem(STORAGE_KEY,JSON.stringify(app));if(!initializing)scheduleCloudSync();}
+
+var $=function(id){return document.getElementById(id)};var board=$('board'),cats=$('cats'),msg=$('message'),suggestions=$('suggestions'),toast=$('toast'),toastTimer;
+function notify(t){toast.textContent=t;toast.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(function(){toast.hidden=true;},3200);}
+function applySettings(){var s=profile().settings,effective=window.innerWidth<480?Math.min(Number(s.grid)||4,2):window.innerWidth<760?Math.min(Number(s.grid)||4,3):(Number(s.grid)||4);document.documentElement.style.setProperty('--cols',String(effective));document.body.classList.toggle('large',!!s.large);document.body.classList.toggle('high-contrast',!!s.contrast);document.body.classList.toggle('text-only',s.displayMode==='text');document.body.classList.toggle('symbol-only',s.displayMode==='symbol');$('profileButton').textContent='👤 '+profile().name;restartScanning();}
+function renderMessage(noSave){var p=profile();msg.innerHTML=p.words.length?'':'<span class="muted">Choose words below</span>';if(p.words.length)msg.textContent=p.words.join(' ');$('speak').disabled=$('del').disabled=$('clear').disabled=$('savePhrase').disabled=!p.words.length;$('undo').disabled=!history.length;renderSuggestions();if(!noSave)save();}
+function renderSuggestions(){suggestions.innerHTML='';var p=profile(),last=(p.words[p.words.length-1]||'').toLowerCase().replace(/[?.!,]/g,'');var list=(NEXT[last]||[]).slice();if(!list.length&&p.recent.length){var freq={};p.recent.slice(0,20).forEach(function(ph){String(ph).split(/\s+/).forEach(function(w){w=w.toLowerCase().replace(/[^a-z']/g,'');if(w)freq[w]=(freq[w]||0)+1;});});list=Object.keys(freq).sort(function(a,b){return freq[b]-freq[a];}).slice(0,6);}list.slice(0,7).forEach(function(w){var b=document.createElement('button');b.className='suggestion';b.textContent=w;b.onclick=function(){addWord(w);};suggestions.appendChild(b);});}
+function allEntries(cat){var p=profile(),arr=[];(BUILTINS[cat]||[]).forEach(function(w,i){arr.push({id:'b:'+cat+':'+i,label:w[0],symbol:w[1],cat:cat,builtin:true,phrase:cat==='Quick'||cat==='Social'||cat==='Emergency'});});p.custom.filter(function(x){return x.cat===cat;}).forEach(function(x){arr.push(Object.assign({builtin:false},x));});return arr;}
+function entryById(id){for(var c in BUILTINS){var e=allEntries(c).find(function(x){return x.id===id;});if(e)return e;}return profile().custom.find(function(x){return x.id===id;})||null;}
+function renderCats(){cats.innerHTML='';CAT_ORDER.forEach(function(name){var b=document.createElement('button');b.className='cat'+(name===profile().cat?' on':'');b.textContent=name;b.onclick=function(){profile().cat=name;renderCats();renderBoard();save();};cats.appendChild(b);});var opts=$('customCategory');opts.innerHTML='';Object.keys(BUILTINS).filter(function(c){return c!=='Emergency';}).forEach(function(c){var o=document.createElement('option');o.textContent=c;opts.appendChild(o);});}
+function makeWordButton(e){var b=document.createElement('button');b.className='word'+(profile().favorites.indexOf(e.id)>=0?' favorite':'');b.dataset.entryId=e.id;b.setAttribute('aria-label',(e.phrase?'Speak ':'Add ')+e.label);var media=e.photo||e.symbol||'💬';if(typeof media==='string'&&media.indexOf('data:image/')===0){var im=document.createElement('img');im.className='wordimg';im.src=media;im.alt='';b.appendChild(im);}else{var s=document.createElement('span');s.className='sym';s.setAttribute('aria-hidden','true');s.textContent=media;b.appendChild(s);}var l=document.createElement('span');l.className='lab';l.textContent=e.label;b.appendChild(l);
+ if(editMode){var star=document.createElement('button');star.className='star';star.type='button';star.textContent=profile().favorites.indexOf(e.id)>=0?'★':'☆';star.title='Toggle favorite';star.onclick=function(ev){ev.stopPropagation();toggleFavorite(e.id);};b.appendChild(star);}
+ bindAccessibleActivation(b,function(){activateEntry(e);});return b;}
+function bindAccessibleActivation(el,fn){var hold=Number(profile().settings.holdMs)||0;if(!hold){el.onclick=function(ev){if(ev.target.classList.contains('star'))return;safeActivate(fn);};return;}el.onpointerdown=function(ev){if(ev.target.classList.contains('star'))return;clearTimeout(holdTimer);holdTimer=setTimeout(function(){safeActivate(fn);holdTimer=null;},hold);};el.onpointerup=el.onpointercancel=el.onpointerleave=function(){if(holdTimer){clearTimeout(holdTimer);holdTimer=null;}};}
+function safeActivate(fn){var lock=Number(profile().settings.lockoutMs)||0,now=Date.now();if(now-lastActivation<lock)return;lastActivation=now;fn();}
+function activateEntry(e){if(e.audio){new Audio(e.audio).play().catch(function(){say(e.label,false);});}else say(e.label,false);if(e.phrase||/[.!?]$/.test(e.label)){profile().words=e.label.replace(/[.!?]$/,'').split(/\s+/);renderMessage();}else addWord(e.label);}
+function addWord(w){history.push(profile().words.slice());profile().words.push(w);renderMessage();say(w,false);}
+function toggleFavorite(id){var f=profile().favorites,i=f.indexOf(id);if(i>=0)f.splice(i,1);else f.push(id);save();renderBoard();}
+function renderBoard(){board.innerHTML='';var cat=profile().cat;if(cat==='Favorites'){var ids=profile().favorites.slice();if(!ids.length)board.innerHTML='<div class="about-card">No favorites yet. In caregiver edit mode, tap ☆ on a button to add it here.</div>';ids.forEach(function(id){var e=entryById(id);if(e)board.appendChild(makeWordButton(e));});refreshScanButtons();return;}if(cat==='Scenes'){renderScenes();refreshScanButtons();return;}if(cat==='Emergency'){renderEmergency();refreshScanButtons();return;}var entries=allEntries(cat);entries.forEach(function(e){board.appendChild(makeWordButton(e));});if(!entries.length)board.innerHTML='<div class="about-card">No buttons on this page yet.</div>';refreshScanButtons();}
+function renderEmergency(){var p=profile();var card=document.createElement('div');card.className='emergency-card';card.style.gridColumn='1/-1';card.innerHTML='<h2>Emergency communication</h2><div class="about-card"><strong>'+(escapeHtml(p.about.name)||'My name')+'</strong><br>'+(escapeHtml(p.about.contact)||'')+'<br>'+escapeHtml(p.about.notes||'I use this device to communicate. Please give me time to respond.')+'</div>';board.appendChild(card);allEntries('Emergency').forEach(function(e){board.appendChild(makeWordButton(e));});}
+function renderScenes(){var p=profile();if(!p.scenes.length){board.innerHTML='<div class="about-card">No visual scenes yet. A caregiver can add one from editor mode.</div>';return;}p.scenes.forEach(function(sc){var wrap=document.createElement('div');wrap.className='scene-wrap';wrap.style.gridColumn='1/-1';var h=document.createElement('h2');h.textContent=sc.name;wrap.appendChild(h);var stage=document.createElement('div');stage.className='scene-stage';var im=document.createElement('img');im.src=sc.photo||'';im.alt=sc.name;stage.appendChild(im);(sc.hotspots||[]).forEach(function(hs,idx){var hb=document.createElement('button');hb.className='hotspot';hb.style.left=hs.x+'%';hb.style.top=hs.y+'%';hb.textContent='●';hb.title=hs.phrase;hb.onclick=function(ev){ev.stopPropagation();say(hs.phrase,true);rememberRecent(hs.phrase);};if(editMode)hb.ondblclick=function(ev){ev.stopPropagation();if(confirm('Remove hotspot: '+hs.phrase+'?')){sc.hotspots.splice(idx,1);save();renderBoard();}};stage.appendChild(hb);});if(editMode){stage.onclick=function(ev){if(ev.target!==stage&&ev.target!==im)return;var r=stage.getBoundingClientRect(),x=((ev.clientX-r.left)/r.width*100),y=((ev.clientY-r.top)/r.height*100),phrase=prompt('What should this spot say?');if(phrase&&phrase.trim()){sc.hotspots=sc.hotspots||[];sc.hotspots.push({x:Math.max(0,Math.min(100,x)),y:Math.max(0,Math.min(100,y)),phrase:phrase.trim()});save();renderBoard();}};}wrap.appendChild(stage);var help=document.createElement('div');help.className='scene-help';help.textContent=editMode?'Tap the photo to add a spoken hotspot. Double-tap a hotspot to remove it.':'Tap a blue hotspot to speak.';wrap.appendChild(help);board.appendChild(wrap);});}
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];});}
+function say(text,interrupt){if(!text)return;if(interrupt&&'speechSynthesis' in window)speechSynthesis.cancel();if('speechSynthesis' in window){var u=new SpeechSynthesisUtterance(String(text).replace(/\?$/,'')),v=speechSynthesis.getVoices().find(function(x){return x.voiceURI===profile().settings.voice;});if(v)u.voice=v;u.rate=Number(profile().settings.rate)||1;speechSynthesis.speak(u);}if(String(text).trim().split(/\s+/).length>1)rememberRecent(String(text));}
+function rememberRecent(t){var p=profile();p.recent=p.recent.filter(function(x){return x!==t;});p.recent.unshift(t);p.recent=p.recent.slice(0,30);save();}
+
+$('speak').onclick=function(){var t=profile().words.join(' ');say(t,true);rememberRecent(t);};$('del').onclick=function(){if(profile().words.length){history.push(profile().words.slice());profile().words.pop();renderMessage();}};$('undo').onclick=function(){if(history.length){profile().words=history.pop();renderMessage();}};$('clear').onclick=function(){if(profile().words.length)ask('Clear the whole message?',function(){history.push(profile().words.slice());profile().words=[];if('speechSynthesis' in window)speechSynthesis.cancel();renderMessage();});};$('savePhrase').onclick=function(){var t=profile().words.join(' ').trim();if(!t)return;if(profile().phrases.indexOf(t)<0)profile().phrases.unshift(t);save();notify('Phrase saved.');};$('historyButton').onclick=function(){renderHistory();$('recentDialog').showModal();};
+function renderHistory(){var pl=$('phraseList'),rl=$('recentList');pl.innerHTML='';rl.innerHTML='';function row(t,saved){var d=document.createElement('div');d.className='customitem';var b=document.createElement('button');b.className='pill';b.textContent='🔊 '+t;b.onclick=function(){say(t,true);};d.appendChild(b);if(saved){var rm=document.createElement('button');rm.className='pill danger';rm.textContent='Remove';rm.onclick=function(){profile().phrases=profile().phrases.filter(function(x){return x!==t;});save();renderHistory();};d.appendChild(rm);}return d;}profile().phrases.forEach(function(t){pl.appendChild(row(t,true));});profile().recent.forEach(function(t){rl.appendChild(row(t,false));});if(!profile().phrases.length)pl.textContent='No saved phrases yet.';if(!profile().recent.length)rl.textContent='Nothing spoken recently.';}
+
+function loadVoices(){if(!('speechSynthesis' in window))return;var vs=speechSynthesis.getVoices().filter(function(v){return v.lang.toLowerCase().indexOf('en')===0;}),sel=$('voice');sel.innerHTML='<option value="">Automatic</option>';vs.forEach(function(v){var o=document.createElement('option');o.value=v.voiceURI;o.textContent=v.name+' ('+v.lang+')';sel.appendChild(o);});sel.value=profile().settings.voice||'';}
+function loadSettingsUi(){var s=profile().settings;loadVoices();$('rate').value=s.rate;$('rateOut').value=Number(s.rate).toFixed(1);$('gridSize').value=String(s.grid);$('displayMode').value=s.displayMode;$('holdMs').value=String(s.holdMs);$('lockoutMs').value=String(s.lockoutMs);$('largeLabels').checked=!!s.large;$('highContrast').checked=!!s.contrast;$('scanEnabled').checked=!!s.scanEnabled;$('scanSeconds').value=String(s.scanSeconds);}
+$('settingsButton').onclick=function(){loadSettingsUi();$('settingsDialog').showModal();};
+['voice','gridSize','displayMode','holdMs','lockoutMs','scanSeconds'].forEach(function(id){$(id).onchange=function(){var s=profile().settings;if(id==='voice')s.voice=this.value;else if(id==='gridSize')s.grid=Number(this.value);else if(id==='displayMode')s.displayMode=this.value;else if(id==='holdMs')s.holdMs=Number(this.value);else if(id==='lockoutMs')s.lockoutMs=Number(this.value);else if(id==='scanSeconds')s.scanSeconds=Number(this.value);save();applySettings();renderBoard();};});$('rate').oninput=function(){profile().settings.rate=Number(this.value);$('rateOut').value=Number(this.value).toFixed(1);save();};$('largeLabels').onchange=function(){profile().settings.large=this.checked;save();applySettings();};$('highContrast').onchange=function(){profile().settings.contrast=this.checked;save();applySettings();};$('scanEnabled').onchange=function(){profile().settings.scanEnabled=this.checked;save();applySettings();};
+
+var pinAction=null;$('editButton').onclick=function(){if(editMode){openCaregiver();return;}var pin=profile().caregiver.pin;if(!pin){editMode=true;openCaregiver();notify('Editor unlocked. Set a caregiver PIN if you want.');return;}$('pinTitle').textContent='Caregiver PIN';$('pinHint').textContent='Enter the caregiver PIN to edit buttons and profiles.';$('pinInput').value='';pinAction=function(v){if(v===pin){editMode=true;openCaregiver();}else notify('Incorrect PIN.');};$('pinDialog').showModal();setTimeout(function(){$('pinInput').focus();},100);};$('pinOkay').onclick=function(){var v=$('pinInput').value;$('pinDialog').close();if(pinAction)pinAction(v);pinAction=null;};
+function openCaregiver(){editMode=true;$('editButton').textContent='🔓';renderBoard();renderCaregiver();$('caregiverDialog').showModal();}
+$('exitEdit').onclick=function(){editMode=false;$('editButton').textContent='🔒';$('caregiverDialog').close();renderBoard();};
+function renderCaregiver(){renderCustomList();renderProfiles();renderSceneList();var a=profile().about;$('aboutName').value=a.name||'';$('aboutContact').value=a.contact||'';$('aboutNotes').value=a.notes||'';}
+function renderCustomList(){var el=$('customList');el.innerHTML='';profile().custom.forEach(function(w,i){var r=document.createElement('div');r.className='customitem';var t=document.createElement('span');t.textContent=(w.symbol||'💬')+' '+w.label+' · '+w.cat;var rm=document.createElement('button');rm.className='pill danger';rm.textContent='Remove';rm.onclick=function(){ask('Remove '+w.label+'?',function(){profile().custom.splice(i,1);profile().favorites=profile().favorites.filter(function(id){return id!==w.id;});save();renderCustomList();renderBoard();});};r.appendChild(t);r.appendChild(rm);el.appendChild(r);});if(!profile().custom.length)el.textContent='No personal buttons yet.';}
+function readFileData(input,max){return new Promise(function(resolve,reject){var f=input.files&&input.files[0];if(!f)return resolve('');if(f.size>max)return reject(new Error('File is too large.'));var rd=new FileReader();rd.onload=function(){resolve(rd.result);};rd.onerror=function(){reject(new Error('Could not read file.'));};rd.readAsDataURL(f);});}
+var mediaRecorder=null,audioChunks=[],recordedAudio='';$('recordAudio').onclick=function(){var btn=this;if(mediaRecorder&&mediaRecorder.state==='recording'){mediaRecorder.stop();return;}if(!navigator.mediaDevices||!window.MediaRecorder){notify('Recording is unavailable in this browser.');return;}navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){audioChunks=[];mediaRecorder=new MediaRecorder(stream);mediaRecorder.ondataavailable=function(e){if(e.data.size)audioChunks.push(e.data);};mediaRecorder.onstop=function(){stream.getTracks().forEach(function(t){t.stop();});var blob=new Blob(audioChunks,{type:mediaRecorder.mimeType||'audio/webm'}),rd=new FileReader();rd.onload=function(){recordedAudio=rd.result;btn.textContent='🎙 Start recording';notify('Recording captured.');};rd.readAsDataURL(blob);};mediaRecorder.start();btn.textContent='⏹ Stop recording';setTimeout(function(){if(mediaRecorder&&mediaRecorder.state==='recording')mediaRecorder.stop();},10000);}).catch(function(){notify('Microphone permission was not granted.');});};
+$('addCustom').onclick=function(){var label=$('customLabel').value.trim();if(!label){notify('Enter a word or phrase first.');return;}Promise.all([readFileData($('customPhoto'),1200000),recordedAudio?Promise.resolve(recordedAudio):readFileData($('customAudio'),2500000)]).then(function(m){var w={id:'c-'+Date.now(),label:label,symbol:$('customSymbol').value.trim()||'💬',cat:$('customCategory').value,photo:m[0]||'',audio:m[1]||'',photoFileId:'',audioFileId:''};profile().custom.push(w);$('customLabel').value='';$('customSymbol').value='';$('customPhoto').value='';$('customAudio').value='';recordedAudio='';save();renderCustomList();profile().cat=w.cat;renderCats();renderBoard();notify('Added '+w.label+'.');}).catch(function(e){notify(e.message);});};
+function renderProfiles(){var s=$('profileSelect');s.innerHTML='';app.profiles.forEach(function(p){normalizeProfile(p);var o=document.createElement('option');o.value=p.id;o.textContent=p.name;s.appendChild(o);});s.value=app.activeProfileId;s.onchange=function(){app.activeProfileId=this.value;history=[];save();applySettings();renderAll();renderCaregiver();};}
+$('profileButton').onclick=function(){if(app.profiles.length===1){profile().cat='Core';renderAll();notify(profile().name);return;}var names=app.profiles.map(function(p,i){return (i+1)+'. '+p.name;}).join('\n'),n=prompt('Choose profile:\n'+names);var idx=Number(n)-1;if(app.profiles[idx]){app.activeProfileId=app.profiles[idx].id;save();applySettings();renderAll();}};
+$('addProfile').onclick=function(){var n=prompt('Profile name:');if(!n||!n.trim())return;var p=newProfile(n.trim());app.profiles.push(p);app.activeProfileId=p.id;save();applySettings();renderAll();renderCaregiver();};$('renameProfile').onclick=function(){var n=prompt('New profile name:',profile().name);if(n&&n.trim()){profile().name=n.trim();save();applySettings();renderProfiles();}};$('removeProfile').onclick=function(){if(app.profiles.length<=1){notify('At least one profile is required.');return;}ask('Remove profile '+profile().name+'?',function(){var id=profile().id;app.profiles=app.profiles.filter(function(p){return p.id!==id;});app.activeProfileId=app.profiles[0].id;save();applySettings();renderAll();renderCaregiver();});};
+$('saveAbout').onclick=function(){profile().about={name:$('aboutName').value.trim(),contact:$('aboutContact').value.trim(),notes:$('aboutNotes').value.trim()};save();notify('About Me saved.');};$('setPin').onclick=function(){var v=$('newPin').value.trim();if(v&&!/^\d{4,8}$/.test(v)){notify('Use a 4–8 digit PIN.');return;}profile().caregiver.pin=v;$('newPin').value='';save();notify(v?'PIN saved.':'PIN removed.');};
+$('addScene').onclick=function(){var name=$('sceneName').value.trim();if(!name){notify('Enter a scene name.');return;}readFileData($('scenePhoto'),4000000).then(function(photo){if(!photo){notify('Choose a scene photo.');return;}profile().scenes.push({id:'s-'+Date.now(),name:name,photo:photo,photoFileId:'',hotspots:[]});$('sceneName').value='';$('scenePhoto').value='';save();renderSceneList();profile().cat='Scenes';renderCats();renderBoard();notify('Scene added.');}).catch(function(e){notify(e.message);});};
+function renderSceneList(){var el=$('sceneList');el.innerHTML='';profile().scenes.forEach(function(sc,i){var r=document.createElement('div');r.className='customitem';var t=document.createElement('span');t.textContent='🖼️ '+sc.name+' · '+(sc.hotspots||[]).length+' hotspots';var rm=document.createElement('button');rm.className='pill danger';rm.textContent='Remove';rm.onclick=function(){ask('Remove scene '+sc.name+'?',function(){profile().scenes.splice(i,1);save();renderSceneList();renderBoard();});};r.appendChild(t);r.appendChild(rm);el.appendChild(r);});if(!profile().scenes.length)el.textContent='No scenes yet.';}
+
+$('emergencyButton').onclick=function(){profile().cat='Emergency';renderCats();renderBoard();save();};
+function restartScanning(){clearInterval(scanTimer);scanTimer=null;scanIndex=-1;if(profile().settings.scanEnabled){scanTimer=setInterval(scanStep,(Number(profile().settings.scanSeconds)||1.5)*1000);setTimeout(scanStep,200);}}
+function refreshScanButtons(){scanButtons=Array.from(board.querySelectorAll('.word,.hotspot'));scanIndex=-1;restartScanning();}
+function scanStep(){if(!profile().settings.scanEnabled||!scanButtons.length)return;scanButtons.forEach(function(b){b.classList.remove('scan');});scanIndex=(scanIndex+1)%scanButtons.length;scanButtons[scanIndex].classList.add('scan');}
+document.addEventListener('keydown',function(e){if(profile().settings.scanEnabled&&(e.key===' '||e.key==='Enter')&&scanButtons[scanIndex]){e.preventDefault();scanButtons[scanIndex].click();}});
+
+var pendingConfirm=null;$('confirmCancel').onclick=function(){pendingConfirm=null;$('confirmDialog').close();};$('confirmOkay').onclick=function(){var a=pendingConfirm;pendingConfirm=null;$('confirmDialog').close();if(a)a();};function ask(m,a){pendingConfirm=a;$('confirmMessage').textContent=m;$('confirmDialog').showModal();}
+document.querySelectorAll('[data-close]').forEach(function(b){b.onclick=function(){var d=$(b.getAttribute('data-close'));if(d)d.close();};});
+
+$('backupProfile').onclick=function(){var blob=new Blob([JSON.stringify(app,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='my-voice-backup.json';a.click();setTimeout(function(){URL.revokeObjectURL(url);},1000);};$('restoreProfile').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var x=JSON.parse(r.result);if(!x||!Array.isArray(x.profiles))throw new Error('Not a My Voice v2 backup.');app=x;app.profiles.forEach(normalizeProfile);save();applySettings();renderAll();renderCaregiver();notify('Backup restored.');}catch(err){notify(err.message);}};r.readAsText(f);};
+
+/* Google sign-in + Drive sync */
+var GOOGLE_CLIENT_ID=(document.querySelector('meta[name="google-client-id"]')||{}).content||'',DRIVE_SCOPE='https://www.googleapis.com/auth/drive.file',accessToken='',tokenExpiresAt=0,tokenClient=null,cloudTimer=null,cloudBusy=false,driveIds={root:'',photos:'',audio:'',profile:''};
+function setCloudStatus(text,on){$('cloudStatus').textContent=text;$('cloudButton').classList.toggle('primary',!!on);$('cloudButton').textContent=on?'Sync now':'Sign in with Google';}
+function waitGoogle(){return new Promise(function(resolve,reject){if(window.google&&google.accounts&&google.accounts.oauth2)return resolve();var start=Date.now(),t=setInterval(function(){if(window.google&&google.accounts&&google.accounts.oauth2){clearInterval(t);resolve();}else if(Date.now()-start>10000){clearInterval(t);reject(new Error('Google sign-in could not load.'));}},100);});}
+function authorize(promptMode){if(accessToken&&Date.now()<tokenExpiresAt-60000)return Promise.resolve(accessToken);return waitGoogle().then(function(){return new Promise(function(resolve,reject){if(!tokenClient)tokenClient=google.accounts.oauth2.initTokenClient({client_id:GOOGLE_CLIENT_ID,scope:DRIVE_SCOPE,callback:function(){}});tokenClient.callback=function(resp){if(resp.error)return reject(new Error(resp.error));accessToken=resp.access_token;tokenExpiresAt=Date.now()+(Number(resp.expires_in)||3600)*1000;resolve(accessToken);};tokenClient.requestAccessToken({prompt:promptMode||''});});});}
+function driveFetch(url,opt){opt=opt||{};return authorize('').then(function(){opt.headers=Object.assign({},opt.headers||{},{Authorization:'Bearer '+accessToken});return fetch(url,opt);}).then(function(r){if(r.status===401){accessToken='';throw new Error('Google session expired. Tap Sign in with Google again.');}if(!r.ok)return r.text().then(function(t){throw new Error('Google Drive error '+r.status+(t?': '+t.slice(0,180):''));});return r;});}
+function driveJson(url,opt){return driveFetch(url,opt).then(function(r){return r.json();});}
+function findFile(q){return driveJson('https://www.googleapis.com/drive/v3/files?spaces=drive&pageSize=50&fields=files(id,name,mimeType,modifiedTime,parents,appProperties)&q='+encodeURIComponent(q)).then(function(x){return x.files&&x.files[0];});}
+function createMeta(meta){return driveJson('https://www.googleapis.com/drive/v3/files?fields=id,name,mimeType,parents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(meta)});}
+function ensureFolder(name,parent,key){var q="mimeType='application/vnd.google-apps.folder' and trashed=false"+(parent?" and '"+parent+"' in parents":'')+" and appProperties has { key='"+key+"' and value='1' }";return findFile(q).then(function(f){if(f)return f.id;var m={name:name,mimeType:'application/vnd.google-apps.folder',appProperties:{}};m.appProperties[key]='1';if(parent)m.parents=[parent];return createMeta(m).then(function(x){return x.id;});});}
+function ensureDrive(){return ensureFolder('My Voice','', 'myVoiceRoot').then(function(id){driveIds.root=id;return Promise.all([ensureFolder('Photos',id,'myVoicePhotos'),ensureFolder('Audio',id,'myVoiceAudio'),findFile("trashed=false and '"+id+"' in parents and appProperties has { key='myVoiceProfileV2' and value='1' }")]);}).then(function(r){driveIds.photos=r[0];driveIds.audio=r[1];driveIds.profile=r[2]?r[2].id:'';});}
+function dataUrlBlob(url){var a=url.split(','),m=/:(.*?);/.exec(a[0]),bin=atob(a[1]),n=bin.length,u=new Uint8Array(n);while(n--)u[n]=bin.charCodeAt(n);return new Blob([u],{type:m?m[1]:'application/octet-stream'});}
+function blobToDataUrl(blob){return new Promise(function(resolve,reject){var r=new FileReader();r.onload=function(){resolve(r.result);};r.onerror=reject;r.readAsDataURL(blob);});}
+function uploadBlob(blob,name,parent,propKey,propVal){var boundary='myvoice'+Date.now()+Math.random().toString(16).slice(2),meta={name:name,parents:[parent],appProperties:{}};meta.appProperties[propKey]=propVal;var body=new Blob(['--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n',JSON.stringify(meta),'\r\n--'+boundary+'\r\nContent-Type: '+(blob.type||'application/octet-stream')+'\r\n\r\n',blob,'\r\n--'+boundary+'--'],{type:'multipart/related; boundary='+boundary});return driveJson('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+boundary},body:body});}
+function uploadMedia(){var jobs=[];app.profiles.forEach(function(p){normalizeProfile(p);p.custom.forEach(function(w){if(w.photo&&!w.photoFileId)jobs.push(uploadBlob(dataUrlBlob(w.photo),w.id+'.jpg',driveIds.photos,'myVoiceMedia','photo').then(function(f){w.photoFileId=f.id;}));if(w.audio&&!w.audioFileId)jobs.push(uploadBlob(dataUrlBlob(w.audio),w.id+'.webm',driveIds.audio,'myVoiceMedia','audio').then(function(f){w.audioFileId=f.id;}));});p.scenes.forEach(function(sc){if(sc.photo&&!sc.photoFileId)jobs.push(uploadBlob(dataUrlBlob(sc.photo),sc.id+'.jpg',driveIds.photos,'myVoiceMedia','scene').then(function(f){sc.photoFileId=f.id;}));});});return Promise.all(jobs);}
+function cloudCopy(){var copy=JSON.parse(JSON.stringify(app));copy.profiles.forEach(function(p){p.custom.forEach(function(w){w.photo='';w.audio='';});p.scenes.forEach(function(sc){sc.photo='';});});return copy;}
+function saveCloudProfile(){var blob=new Blob([JSON.stringify(cloudCopy(),null,2)],{type:'application/json'});if(driveIds.profile)return driveFetch('https://www.googleapis.com/upload/drive/v3/files/'+driveIds.profile+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':'application/json'},body:blob});return uploadBlob(blob,'profile.json',driveIds.root,'myVoiceProfileV2','1').then(function(f){driveIds.profile=f.id;});}
+function loadCloudProfile(){if(!driveIds.profile)return Promise.resolve(null);return driveFetch('https://www.googleapis.com/drive/v3/files/'+driveIds.profile+'?alt=media').then(function(r){return r.json();});}
+function hydrateMedia(a){var jobs=[];(a.profiles||[]).forEach(function(p){normalizeProfile(p);p.custom.forEach(function(w){if(w.photoFileId)jobs.push(driveFetch('https://www.googleapis.com/drive/v3/files/'+w.photoFileId+'?alt=media').then(function(r){return r.blob();}).then(blobToDataUrl).then(function(d){w.photo=d;}).catch(function(){}));if(w.audioFileId)jobs.push(driveFetch('https://www.googleapis.com/drive/v3/files/'+w.audioFileId+'?alt=media').then(function(r){return r.blob();}).then(blobToDataUrl).then(function(d){w.audio=d;}).catch(function(){}));});p.scenes.forEach(function(sc){if(sc.photoFileId)jobs.push(driveFetch('https://www.googleapis.com/drive/v3/files/'+sc.photoFileId+'?alt=media').then(function(r){return r.blob();}).then(blobToDataUrl).then(function(d){sc.photo=d;}).catch(function(){}));});});return Promise.all(jobs).then(function(){return a;});}
+function performSync(interactive){if(cloudBusy)return Promise.resolve();cloudBusy=true;setCloudStatus('Syncing…',true);return authorize(interactive?'consent':'').then(ensureDrive).then(loadCloudProfile).then(function(cloud){if(cloud&&Number(cloud.updatedAt)>Number(app.updatedAt)){return hydrateMedia(cloud).then(function(h){app=h;app.profiles.forEach(normalizeProfile);localStorage.setItem(STORAGE_KEY,JSON.stringify(app));applySettings();renderAll();});}return uploadMedia().then(saveCloudProfile);}).then(function(){setCloudStatus('Synced with Google',true);}).catch(function(e){setCloudStatus('Saved on this device',false);notify(e.message);}).finally(function(){cloudBusy=false;});}
+function scheduleCloudSync(){if(!accessToken)return;clearTimeout(cloudTimer);cloudTimer=setTimeout(function(){performSync(false);},1500);}
+$('cloudButton').onclick=function(){performSync(!accessToken);};
+
+function renderAll(){renderMessage(true);renderCats();renderBoard();applySettings();}
+if('speechSynthesis' in window)speechSynthesis.onvoiceschanged=loadVoices;
+initializing=false;renderAll();localStorage.setItem(STORAGE_KEY,JSON.stringify(app));window.addEventListener('resize',applySettings);
+})();
+</script>
+</body>
 </html>
