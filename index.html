@@ -331,6 +331,27 @@ button:disabled {
 .cloudbutton.on {
     border-color:var(--a)
 }
+.google-signin {
+    background:#fff;
+    color:#1f1f1f;
+    border-color:#dadce0;
+    box-shadow:0 1px 2px #0002;
+}
+.google-signin::before {
+    content:"G";
+    display:inline-grid;
+    place-items:center;
+    width:24px;
+    height:24px;
+    margin-right:8px;
+    border-radius:50%;
+    font-weight:900;
+    color:#4285f4;
+}
+.cloudbutton.on::before {
+    content:"✓";
+    color:var(--a);
+}
 @media(max-width:620px) {
     .cloudstatus {display:none}
     .cloudbutton {padding:8px 10px}
@@ -354,7 +375,7 @@ button:disabled {
     </div>
     <div class="cloudbar">
      <span class="cloudstatus" id="cloudStatus">Saved on this device</span>
-     <button aria-label="Connect Google Drive" class="cloudbutton" id="cloudButton" type="button">☁️ Connect</button>
+     <button aria-label="Sign in with Google" class="cloudbutton google-signin" id="cloudButton" type="button">Sign in with Google</button>
      <button aria-label="Voice settings" class="settings" id="settings">
       ⚙
      </button>
@@ -489,7 +510,7 @@ button:disabled {
     <p aria-live="polite" class="hint" id="addStatus" role="status">
     </p>
     <p class="hint">
-     Personal words and settings stay only in this tablet browser.
+     Personal words and settings are saved on this device and sync to your Google account when signed in.
     </p>
     <div class="customlist" id="customList">
     </div>
@@ -780,7 +801,7 @@ button:disabled {
     function setCloudStatus(text,connected) {
         cloudStatus.textContent=text;
         cloudButton.classList.toggle('on',!!connected);
-        cloudButton.textContent=connected?'☁️ Sync':'☁️ Connect'
+        cloudButton.textContent=connected?'Sync now':'Sign in with Google'
     }
     function waitForGoogleIdentity() {
         return new Promise(function(resolve,reject) {
@@ -795,7 +816,7 @@ button:disabled {
         })
     }
     function authorize(promptMode) {
-        if(!cloudConfigured())return Promise.reject(new Error('Google sync is not configured yet. Add your OAuth client ID to the google-client-id meta tag.'));
+        if(!cloudConfigured())return Promise.reject(new Error('Google sign-in has not been configured for this site yet.'));
         if(accessToken&&Date.now()<tokenExpiresAt-60000)return Promise.resolve(accessToken);
         return waitForGoogleIdentity().then(function() {
             return new Promise(function(resolve,reject) {
@@ -808,7 +829,7 @@ button:disabled {
                     if(resp.error)return reject(new Error(resp.error_description||resp.error));
                     accessToken=resp.access_token;
                     tokenExpiresAt=Date.now()+(Number(resp.expires_in)||3600)*1000;
-                    setCloudStatus('Google Drive connected',true);
+                    setCloudStatus('Signed in with Google',true);
                     resolve(accessToken)
                 };
                 tokenClient.requestAccessToken({prompt:promptMode||''})
@@ -821,7 +842,7 @@ button:disabled {
         return fetch(url,options).then(function(response) {
             if(response.status===401) {
                 accessToken='';tokenExpiresAt=0;
-                throw new Error('Google authorization expired. Tap Connect again.')
+                throw new Error('Your Google session expired. Sign in again.')
             }
             if(!response.ok)return response.text().then(function(text) {
                 throw new Error('Google Drive error '+response.status+(text?': '+text.slice(0,220):''))
@@ -930,7 +951,7 @@ button:disabled {
             rate.value=state.rate||1;rateOut.value=Number(rate.value).toFixed(1);large.checked=!!state.large;document.body.classList.toggle('large',!!state.large);
             renderCats();renderBoard();renderMessage();renderCustom();
             initializing=false;
-            notify('My Voice restored from Google Drive.')
+            notify('Your My Voice profile was restored.')
         })
     }
     function performCloudSync(forcePull) {
@@ -944,7 +965,7 @@ button:disabled {
             if(remote&&(forcePull||remoteUpdated>localUpdated))return applyRemote(remote).then(function(){return 'pulled'});
             return uploadPendingMedia().then(writeCloudProfile).then(function(){localStorage.setItem(key,JSON.stringify(state));return 'pushed'})
         }).then(function(direction) {
-            setCloudStatus(direction==='pulled'?'Restored from Drive':'Synced to Drive',true)
+            setCloudStatus(direction==='pulled'?'Your account is up to date':'Your account is up to date',true)
         }).catch(function(error) {
             setCloudStatus('Saved on this device',false);notify(error.message)
         }).finally(function(){cloudBusy=false})
@@ -955,7 +976,7 @@ button:disabled {
     }
     cloudButton.onclick=function() {
         if(!cloudConfigured()) {
-            notify('Add your Google OAuth client ID to the HTML first.');return
+            notify('Google sign-in has not been configured for this site yet.');return
         }
         if(accessToken) {performCloudSync(false);return}
         authorize('consent').then(function(){return performCloudSync(false)}).catch(function(error){notify(error.message)})
